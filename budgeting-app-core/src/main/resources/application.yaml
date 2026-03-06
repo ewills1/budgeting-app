@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: budgeting-app
+
+  # MongoDB Configuration - Docker environment
+  data:
+    mongodb:
+      uri: mongodb://admin:admin123@mongodb:27017/budgeting-app?authSource=admin
+      auto-index-creation: true
+
+# Server Configuration
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+# JWT Configuration
+app:
+  jwt:
+    secret: your-super-secret-jwt-key-change-this-in-production-with-minimum-256-bits
+    expiration: 86400000
+
+# Logging
+logging:
+  level:
+    root: INFO
+    com:
+      budgeting: DEBUG
