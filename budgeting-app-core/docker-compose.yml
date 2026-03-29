@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   mongo:
-    image: mongo:7
+    image: mongo:7.0
     container_name: mongo
     restart: always
     ports:
@@ -11,15 +11,18 @@ services:
       - mongo_data:/data/db
 
   user-service:
-    build: ./user-service
+    build:
+      context: .
+      dockerfile: user-service/Dockerfile
     container_name: user-service
     restart: always
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/budgeting
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/budgeting-app
       JWT_SECRET: your-base64-secret
       JWT_EXPIRATION_MS: 3600000
+      SERVER_PORT: 8080
     depends_on:
       - mongo
 
@@ -32,8 +35,9 @@ services:
     ports:
       - "8081:8081"
     environment:
-      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/budgeting
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/budgeting-app
       JWT_SECRET: your-base64-secret
+      SERVER_PORT: 8081
     depends_on:
       - mongo
 
@@ -46,8 +50,9 @@ services:
     ports:
       - "8082:8082"
     environment:
-      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/budgeting
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/budgeting-app
       JWT_SECRET: your-base64-secret
+      SERVER_PORT: 8082
     depends_on:
       - mongo
 
@@ -60,8 +65,9 @@ services:
     ports:
       - "8083:8083"
     environment:
-      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/budgeting
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/budgeting-app
       JWT_SECRET: your-base64-secret
+      SERVER_PORT: 8083
     depends_on:
       - mongo
 

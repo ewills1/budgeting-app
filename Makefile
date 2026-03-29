@@ -1,4 +1,4 @@
-.PHONY: help up down logs build build-maven build-all rebuild clean status \
+.PHONY: help up down logs build rebuild clean status \
         up-services down-services \
         logs-user logs-budget logs-transaction logs-category \
         shell-user shell-budget shell-transaction shell-category shell-mongo \
@@ -28,10 +28,10 @@ help:
 	@echo "  make logs-category   - Stream category-service logs"
 	@echo ""
 	@echo "Shell access:"
-	@echo "  make shell-user      - Open bash in user-service container"
-	@echo "  make shell-budget    - Open bash in budget-service container"
-	@echo "  make shell-transaction - Open bash in transaction-service container"
-	@echo "  make shell-category  - Open bash in category-service container"
+	@echo "  make shell-user      - Open sh in user-service container"
+	@echo "  make shell-budget    - Open sh in budget-service container"
+	@echo "  make shell-transaction - Open sh in transaction-service container"
+	@echo "  make shell-category  - Open sh in category-service container"
 	@echo "  make shell-mongo     - Open mongosh in MongoDB container"
 	@echo ""
 	@echo "Tests:"
@@ -54,8 +54,8 @@ help:
 
 # ========== Full Stack ==========
 
-up: build-maven
-	docker-compose up -d
+up:
+	docker-compose up -d --build
 	@echo ""
 	@echo "✅ All services started!"
 	@echo ""
@@ -76,8 +76,8 @@ logs:
 
 # ========== Backend Services Only ==========
 
-up-services: build-maven
-	docker-compose up -d mongodb mongo-express user-service budget-service transaction-service category-service
+up-services:
+	docker-compose up -d --build mongodb mongo-express user-service budget-service transaction-service category-service
 	@echo ""
 	@echo "✅ Backend microservices started!"
 	@echo ""
@@ -93,9 +93,6 @@ down-services:
 	@echo "✅ Backend microservices stopped"
 
 # ========== Build ==========
-
-build-maven:
-	./mvnw -f budgeting-app-core/pom.xml clean package -DskipTests
 
 build:
 	docker-compose build user-service budget-service transaction-service category-service
@@ -124,16 +121,16 @@ logs-category:
 # ========== Shell Access ==========
 
 shell-user:
-	docker-compose exec user-service bash
+	docker-compose exec user-service sh
 
 shell-budget:
-	docker-compose exec budget-service bash
+	docker-compose exec budget-service sh
 
 shell-transaction:
-	docker-compose exec transaction-service bash
+	docker-compose exec transaction-service sh
 
 shell-category:
-	docker-compose exec category-service bash
+	docker-compose exec category-service sh
 
 shell-mongo:
 	docker-compose exec mongodb mongosh -u admin -p admin123 --authenticationDatabase admin
@@ -141,22 +138,19 @@ shell-mongo:
 # ========== Tests ==========
 
 test:
-	docker-compose exec user-service mvn test && \
-	docker-compose exec budget-service mvn test && \
-	docker-compose exec transaction-service mvn test && \
-	docker-compose exec category-service mvn test
+	./mvnw -f budgeting-app-core/pom.xml test
 
 test-user:
-	docker-compose exec user-service mvn test
+	./mvnw -f budgeting-app-core/pom.xml -pl user-service test
 
 test-budget:
-	docker-compose exec budget-service mvn test
+	./mvnw -f budgeting-app-core/pom.xml -pl budget-service test
 
 test-transaction:
-	docker-compose exec transaction-service mvn test
+	./mvnw -f budgeting-app-core/pom.xml -pl transaction-service test
 
 test-category:
-	docker-compose exec category-service mvn test
+	./mvnw -f budgeting-app-core/pom.xml -pl category-service test
 
 # ========== Maintenance ==========
 
