@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface TransactionRepository extends MongoRepository<Transaction, String> {
     List<Transaction> findByUserId(String userId);
-    List<Transaction> findByCategoryId(String categoryId);
+    List<Transaction> findByUserIdAndCategoryId(String userId, String categoryId);
 }
