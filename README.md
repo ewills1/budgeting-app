@@ -194,7 +194,7 @@ Each service has its own `Dockerfile` using a two-stage build:
 - [Docker](https://docs.docker.com/get-docker/) 24+
 - [Docker Compose](https://docs.docker.com/compose/install/) v2+
 - [Make](https://www.gnu.org/software/make/) (optional but recommended)
-- [Java 17](https://adoptium.net/) + [Maven 3.9+](https://maven.apache.org/) (for local development only)
+- [Java 17](https://adoptium.net/) + [Maven 3.9+](https://maven.apache.org/) (for running tests and local development)
 
 ### Quick Start
 
@@ -263,10 +263,10 @@ The `Makefile` at the project root provides shortcuts for all common tasks.
 
 | Command | Description |
 |---|---|
-| `make shell-user` | Open a bash shell in user-service |
-| `make shell-budget` | Open a bash shell in budget-service |
-| `make shell-transaction` | Open a bash shell in transaction-service |
-| `make shell-category` | Open a bash shell in category-service |
+| `make shell-user` | Open a shell in user-service |
+| `make shell-budget` | Open a shell in budget-service |
+| `make shell-transaction` | Open a shell in transaction-service |
+| `make shell-category` | Open a shell in category-service |
 | `make shell-mongo` | Open a `mongosh` shell in MongoDB |
 
 ### Testing
