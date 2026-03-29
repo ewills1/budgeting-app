@@ -29,7 +29,7 @@ services:
     container_name: budgeting-app-mongo-express
     restart: always
     ports:
-      - "8081:8081"
+      - "8086:8081"
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: admin
       ME_CONFIG_MONGODB_ADMINPASSWORD: admin123
@@ -42,29 +42,82 @@ services:
     networks:
       - finance-network
 
-  # Backend - Spring Boot API
-  backend:
+  # User Service - handles authentication and user management
+  user-service:
     build:
       context: ./budgeting-app-core
-      dockerfile: Dockerfile
-    container_name: budgeting-app-backend
+      dockerfile: user-service/Dockerfile
+    container_name: budgeting-app-user-service
     restart: always
     environment:
-      SPRING_PROFILES_ACTIVE: docker  # Uses application-docker.yml
       SPRING_DATA_MONGODB_URI: mongodb://admin:admin123@mongodb:27017/budgeting-app?authSource=admin
+      JWT_SECRET: ${JWT_SECRET:-r9Ny+vSPeELE77uGBaHt4ZTiNXCYprsRshmkPF9Y8GY=}
+      JWT_EXPIRATION_MS: 3600000
       SERVER_PORT: 8080
     ports:
       - "8080:8080"
     depends_on:
       mongodb:
         condition: service_healthy
-    volumes:
-      - ./budgeting-app-core:/app
-      - /app/target
-      - ~/.m2:/root/.m2
     networks:
       - finance-network
-    command: mvn spring-boot:run
+
+  # Budget Service - manages budgets
+  budget-service:
+    build:
+      context: ./budgeting-app-core
+      dockerfile: budget-service/Dockerfile
+    container_name: budgeting-app-budget-service
+    restart: always
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://admin:admin123@mongodb:27017/budgeting-app?authSource=admin
+      JWT_SECRET: ${JWT_SECRET:-r9Ny+vSPeELE77uGBaHt4ZTiNXCYprsRshmkPF9Y8GY=}
+      SERVER_PORT: 8081
+    ports:
+      - "8081:8081"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - finance-network
+
+  # Transaction Service - manages financial transactions
+  transaction-service:
+    build:
+      context: ./budgeting-app-core
+      dockerfile: transaction-service/Dockerfile
+    container_name: budgeting-app-transaction-service
+    restart: always
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://admin:admin123@mongodb:27017/budgeting-app?authSource=admin
+      JWT_SECRET: ${JWT_SECRET:-r9Ny+vSPeELE77uGBaHt4ZTiNXCYprsRshmkPF9Y8GY=}
+      SERVER_PORT: 8082
+    ports:
+      - "8082:8082"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - finance-network
+
+  # Category Service - manages spending categories
+  category-service:
+    build:
+      context: ./budgeting-app-core
+      dockerfile: category-service/Dockerfile
+    container_name: budgeting-app-category-service
+    restart: always
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://admin:admin123@mongodb:27017/budgeting-app?authSource=admin
+      JWT_SECRET: ${JWT_SECRET:-r9Ny+vSPeELE77uGBaHt4ZTiNXCYprsRshmkPF9Y8GY=}
+      SERVER_PORT: 8083
+    ports:
+      - "8083:8083"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - finance-network
 
   # Frontend - React + TypeScript
   frontend:
@@ -78,7 +131,10 @@ services:
     ports:
       - "5173:5173"
     depends_on:
-      - backend
+      - user-service
+      - budget-service
+      - transaction-service
+      - category-service
     volumes:
       - ./frontend:/app
       - /app/node_modules
