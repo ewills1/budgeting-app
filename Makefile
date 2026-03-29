@@ -1,4 +1,4 @@
-.PHONY: help up down logs build build-all rebuild clean status \
+.PHONY: help up down logs build build-maven build-all rebuild clean status \
         up-services down-services \
         logs-user logs-budget logs-transaction logs-category \
         shell-user shell-budget shell-transaction shell-category shell-mongo \
@@ -54,7 +54,7 @@ help:
 
 # ========== Full Stack ==========
 
-up:
+up: build-maven
 	docker-compose up -d
 	@echo ""
 	@echo "✅ All services started!"
@@ -76,7 +76,7 @@ logs:
 
 # ========== Backend Services Only ==========
 
-up-services:
+up-services: build-maven
 	docker-compose up -d mongodb mongo-express user-service budget-service transaction-service category-service
 	@echo ""
 	@echo "✅ Backend microservices started!"
@@ -93,6 +93,9 @@ down-services:
 	@echo "✅ Backend microservices stopped"
 
 # ========== Build ==========
+
+build-maven:
+	./mvnw clean package -DskipTests
 
 build:
 	docker-compose build user-service budget-service transaction-service category-service
