@@ -23,5 +23,19 @@ services:
     depends_on:
       - mongo
 
+  budget-service:
+    build:
+      context: .
+      dockerfile: budget-service/Dockerfile
+    container_name: budget-service
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/budgeting
+      JWT_SECRET: your-base64-secret
+    depends_on:
+      - mongo
+
 volumes:
   mongo_data:
