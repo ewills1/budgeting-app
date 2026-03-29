@@ -37,5 +37,19 @@ services:
     depends_on:
       - mongo
 
+  transaction-service:
+    build:
+      context: .
+      dockerfile: transaction-service/Dockerfile
+    container_name: transaction-service
+    restart: always
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/budgeting
+      JWT_SECRET: your-base64-secret
+    depends_on:
+      - mongo
+
 volumes:
   mongo_data:
