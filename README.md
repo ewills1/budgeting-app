@@ -182,8 +182,8 @@ A simplified compose file that starts only MongoDB and the four backend microser
 
 Each service has its own `Dockerfile` using a two-stage build:
 
-1. **Build stage** — Maven compiles the JAR using `eclipse-temurin:17-jdk-alpine`.
-2. **Runtime stage** — The JAR is copied into a minimal `eclipse-temurin:17-jre-alpine` image.
+1. **Build stage** — Maven compiles the JAR using `eclipse-temurin:17-jdk`.
+2. **Runtime stage** — The JAR is copied into a minimal `eclipse-temurin:17-jre` image.
 
 ---
 
