@@ -45,8 +45,8 @@ services:
   # User Service - handles authentication and user management
   user-service:
     build:
-      context: ./budgeting-app-core
-      dockerfile: user-service/Dockerfile
+      context: .
+      dockerfile: budgeting-app-core/user-service/Dockerfile
     container_name: budgeting-app-user-service
     restart: always
     environment:
@@ -65,8 +65,8 @@ services:
   # Budget Service - manages budgets
   budget-service:
     build:
-      context: ./budgeting-app-core
-      dockerfile: budget-service/Dockerfile
+      context: .
+      dockerfile: budgeting-app-core/budget-service/Dockerfile
     container_name: budgeting-app-budget-service
     restart: always
     environment:
@@ -84,8 +84,8 @@ services:
   # Transaction Service - manages financial transactions
   transaction-service:
     build:
-      context: ./budgeting-app-core
-      dockerfile: transaction-service/Dockerfile
+      context: .
+      dockerfile: budgeting-app-core/transaction-service/Dockerfile
     container_name: budgeting-app-transaction-service
     restart: always
     environment:
@@ -103,8 +103,8 @@ services:
   # Category Service - manages spending categories
   category-service:
     build:
-      context: ./budgeting-app-core
-      dockerfile: category-service/Dockerfile
+      context: .
+      dockerfile: budgeting-app-core/category-service/Dockerfile
     container_name: budgeting-app-category-service
     restart: always
     environment:
