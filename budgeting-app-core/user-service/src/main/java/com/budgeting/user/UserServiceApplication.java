@@ -1,13 +1,13 @@
-package com.example.budgetingappcore;
+package com.budgeting.user;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BudgetingAppCoreApplication {
+public class UserServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(BudgetingAppCoreApplication.class, args);
+        SpringApplication.run(UserServiceApplication.class, args);
     }
 
 }

@@ -1,18 +1,23 @@
-FROM maven:3.9-eclipse-temurin-17
+# ---- Build stage ----
+FROM maven:3.9.6-eclipse-temurin-17 AS build
 
 WORKDIR /app
 
-# Copy pom.xml first for better layer caching
-COPY pom.xml .
+# Copy everything
+COPY . .
 
-# Download dependencies (this layer gets cached)
-RUN mvn dependency:resolve
+# Build the whole multi-module project
+RUN mvn -B -DskipTests clean package
 
-# Copy source code
-COPY src ./src
 
-# Expose port
+# ---- Runtime stage ----
+FROM eclipse-temurin:17-jre
+
+WORKDIR /app
+
+# Copy ONLY the user-service JAR
+COPY --from=build /app/user-service/target/*.jar app.jar
+
 EXPOSE 8080
 
-# Run the application
-CMD ["mvn", "spring-boot:run"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
