@@ -95,7 +95,7 @@ down-services:
 # ========== Build ==========
 
 build-maven:
-	./mvnw clean package -DskipTests
+	./mvnw -f budgeting-app-core/pom.xml clean package -DskipTests
 
 build:
 	docker-compose build user-service budget-service transaction-service category-service
