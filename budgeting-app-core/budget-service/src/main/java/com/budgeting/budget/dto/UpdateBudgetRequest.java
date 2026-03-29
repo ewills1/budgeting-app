@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Map;
 
 @Data
-public class CreateBudgetRequest {
+public class UpdateBudgetRequest {
     private String name;
     private double monthlyIncome;
     private Map<String, Double> categoryLimits;
