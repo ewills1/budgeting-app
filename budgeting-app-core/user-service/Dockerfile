@@ -5,5 +5,5 @@ RUN ./mvnw -f budgeting-app-core/pom.xml -pl user-service -am package -DskipTest
 
 FROM eclipse-temurin:17-jre
 WORKDIR /app
-COPY --from=build /app/user-service/target/*.jar app.jar
+COPY --from=build /app/budgeting-app-core/user-service/target/*.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]
