@@ -23,6 +23,7 @@
         <module>budget-service</module>
         <module>transaction-service</module>
         <module>category-service</module>
+        <module>api-gateway</module>
     </modules>
 
     <properties>

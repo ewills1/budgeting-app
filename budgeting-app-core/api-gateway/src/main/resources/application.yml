@@ -1,0 +1,72 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      # Global CORS config (adjust origins for your frontend URL)
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:5173"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
+
+      routes:
+        # ── User Service (auth is PUBLIC for login/register) ──────────────
+        - id: user-service-public
+          uri: http://user-service:8081
+          predicates:
+            - Path=/api/users/login, /api/users/register
+          filters:
+            - StripPrefix=0
+
+        - id: user-service-protected
+          uri: http://user-service:8081
+          predicates:
+            - Path=/api/users/**
+          filters:
+            - StripPrefix=0
+            - JwtAuthentication   # custom filter defined below
+
+        # ── Budget Service ─────────────────────────────────────────────────
+        - id: budget-service
+          uri: http://budget-service:8082
+          predicates:
+            - Path=/api/budgets/**
+          filters:
+            - StripPrefix=0
+            - JwtAuthentication
+
+        # ── Transaction Service ────────────────────────────────────────────
+        - id: transaction-service
+          uri: http://transaction-service:8083
+          predicates:
+            - Path=/api/transactions/**
+          filters:
+            - StripPrefix=0
+            - JwtAuthentication
+
+        # ── Category Service ───────────────────────────────────────────────
+        - id: category-service
+          uri: http://category-service:8084
+          predicates:
+            - Path=/api/categories/**
+          filters:
+            - StripPrefix=0
+            - JwtAuthentication
+
+# JWT secret — must match the value used by all downstream services
+jwt:
+  secret: ${JWT_SECRET:r9Ny+vSPeELE77uGBaHt4ZTiNXCYprsRshmkPF9Y8GY=}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
