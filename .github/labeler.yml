@@ -1,0 +1,45 @@
+user-service:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'budgeting-app-core/user-service/**'
+
+budget-service:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'budgeting-app-core/budget-service/**'
+
+transaction-service:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'budgeting-app-core/transaction-service/**'
+
+category-service:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'budgeting-app-core/category-service/**'
+
+api-gateway:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'budgeting-app-core/api-gateway/**'
+
+ci/cd:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '.github/**'
+
+dependencies:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/pom.xml'
+
+docker:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/Dockerfile'
+      - '**/docker-compose*.yml'
+
+frontend:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'frontend/**'
