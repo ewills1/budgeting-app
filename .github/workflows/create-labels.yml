@@ -1,0 +1,45 @@
+name: Create PR Labels
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create-labels:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Create labels
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const labels = [
+              { name: 'user-service',        color: '0075ca', description: 'Changes to user-service' },
+              { name: 'budget-service',        color: 'e4e669', description: 'Changes to budget-service' },
+              { name: 'transaction-service',  color: 'd93f0b', description: 'Changes to transaction-service' },
+              { name: 'category-service',     color: '0e8a16', description: 'Changes to category-service' },
+              { name: 'api-gateway',          color: '6f42c1', description: 'Changes to api-gateway' },
+              { name: 'ci/cd',                color: 'f9d0c4', description: 'Changes to CI/CD workflows' },
+              { name: 'dependencies',         color: '84b6eb', description: 'Dependency changes (pom.xml)' },
+              { name: 'docker',               color: '0052cc', description: 'Changes to Dockerfiles or docker-compose' },
+              { name: 'frontend',             color: 'fbca04', description: 'Changes to the frontend' },
+            ];
+
+            for (const label of labels) {
+              try {
+                await github.rest.issues.createLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: label.name,
+                  color: label.color,
+                  description: label.description,
+                });
+                console.log(`Created label: ${label.name}`);
+              } catch (e) {
+                if (e.status === 422) {
+                  console.log(`Label already exists, skipping: ${label.name}`);
+                } else {
+                  throw e;
+                }
+              }
+            }
