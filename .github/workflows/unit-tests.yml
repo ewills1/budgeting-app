@@ -1,14 +1,33 @@
-name: Java CI
+# CI workflow for budgeting-app
+# Builds and tests all Maven modules under budgeting-app-core on every pull request
+# and on every push to the main branch. A MongoDB service container is started so
+# that integration tests can connect to a real database during the run.
+
+name: CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
 
 jobs:
-  test:
+  build-and-test:
+    name: Build & Test All Modules
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    services:
+      mongodb:
+        image: mongo:7.0
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval \"db.adminCommand('ping')\""
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Checkout code
@@ -18,9 +37,19 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: '17'
-          distribution: 'temurin'
+          distribution: temurin
           cache: maven
 
-      - name: Run tests
-        run: ./mvnw test
-        working-directory: budgeting-app-core
+      - name: Build and test all modules
+        env:
+          SPRING_DATA_MONGODB_URI: mongodb://localhost:27017/test-db
+        run: ./mvnw test -f budgeting-app-core/pom.xml --no-transfer-progress
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports-${{ github.run_number }}
+          path: |
+            **/target/surefire-reports/*.xml
+            **/target/failsafe-reports/*.xml
